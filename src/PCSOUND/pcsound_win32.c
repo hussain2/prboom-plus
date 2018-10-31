@@ -29,7 +29,7 @@
 
 #ifdef USE_WIN32_PCSOUND_DRIVER
 
-#include "SDL.h"
+#include <SDL2/SDL.h>
 #include <windows.h>
 
 #include "pcsound.h"
