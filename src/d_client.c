@@ -48,7 +48,7 @@
 #endif
 
 #ifdef USE_SDL_NET
- #include "SDL.h"
+#include <SDL2/SDL.h>
 #endif
 
 #include "doomtype.h"
