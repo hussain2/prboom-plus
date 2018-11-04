@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.3)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
@@ -6,10 +6,24 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
 project (PrBoom-Plus VERSION 2.5.1.5)
 
+#############
+
+set(as_subproject LOG)
+
+macro(my_find_package)
+	if (NOT "${ARGV0}" IN_LIST as_subproject)
+		message("my_find_package:- calling find_package(${ARGV})")
+		find_package(${ARGV})
+	endif()
+	message("my_find_package:- done")
+endmacro()
+
+#############
+
 add_library(${PROJECT_NAME} INTERFACE)
 
 target_include_directories(${PROJECT_NAME}
-	INTERFACE src ${PROJECT_BINARY_DIR}
+	INTERFACE ${PROJECT_BINARY_DIR} src
 )
 
 target_compile_definitions(${PROJECT_NAME}
@@ -28,16 +42,16 @@ function(find_package name)
 endfunction()
 #]]
 
-find_package(SDL2)
-find_package(SDL2_MIXER)
-find_package(SDL2_IMAGE)
-find_package(SDL2_NET)
-#find_package(PCRE)
-find_package(FLUIDSYNTH)
-#find_package(MAD)
-#find_package(PORTMIDI)
-#find_package(VORBIS)
-#find_package(DUMB)
+my_find_package(SDL2)
+my_find_package(SDL2_MIXER)
+my_find_package(SDL2_IMAGE)
+my_find_package(SDL2_NET)
+#my_find_package(PCRE)
+my_find_package(FLUIDSYNTH)
+#my_find_package(MAD)
+#my_find_package(PORTMIDI)
+#my_find_package(VORBIS)
+#my_find_package(DUMB)
 
 ##
 #[[
@@ -125,20 +139,29 @@ add_subdirectory (src)
 add_subdirectory (data)
 
 file(WRITE null.cpp)
-add_executable(${PACKAGE_NAME} null.cpp)
+add_executable(prboom-plus null.cpp)
+add_executable(glboom-plus null.cpp)
 
-target_include_directories(${PACKAGE_NAME} INTERFACE ${PROJECT_NAME})
-target_link_libraries(${PACKAGE_NAME} ${PROJECT_NAME}
-libsdldoom
-libdoommusic 
-libtextscreen
-libpcsound
-src_objs
+#target_compile_definitions(glboom-plus PUBLIC GL_DOOM=1)
+
+set (LIBS 
 SDL2::SDL2
 SDL2_MIXER::SDL2_MIXER
 SDL2_IMAGE::SDL2_IMAGE
 SDL2_NET::SDL2_NET
 FLUIDSYNTH::FLUIDSYNTH
+)
+
+target_include_directories(prboom-plus INTERFACE ${PROJECT_NAME})
+target_link_libraries(prboom-plus ${PROJECT_NAME}
+	src_objs
+	${LIBS}
+)
+
+target_link_libraries(glboom-plus ${PROJECT_NAME}
+	src_objs
+	gl_objs
+	${LIBS}
 )
 
 #############
