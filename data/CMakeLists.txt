@@ -8,8 +8,13 @@ add_executable(rdatawad
 	rd_graphic.c rd_graphic.h
 )
 
-target_include_directories(rdatawad PUBLIC ${PROJECT_NAME})
-target_link_libraries(rdatawad PUBLIC ${PROJECT_NAME})
+target_include_directories(rdatawad
+	PRIVATE ${PROJECT_BINARY_DIR}
+)
+target_compile_definitions(rdatawad
+	PRIVATE HAVE_CONFIG_H=1
+	PUBLIC $<$<CONFIG:DEBUG>:DEBUG=1>
+)
 
 add_custom_target(prboom_wad DEPENDS prboom-plus.wad)
 
