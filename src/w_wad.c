@@ -146,7 +146,7 @@ static void W_AddFile(wadfile_info_t *wadfile)
 
   wadfile->handle = open(wadfile->name,O_RDONLY | O_BINARY);
 
-#ifdef HAVE_NET
+#ifdef USE_SDL_NET
   if (wadfile->handle == -1 && D_NetGetWad(wadfile->name)) // CPhipps
     wadfile->handle = open(wadfile->name,O_RDONLY | O_BINARY);
 #endif

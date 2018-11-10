@@ -48,7 +48,7 @@
 #include <fcntl.h>
 #include <string.h>
 
-#ifdef HAVE_NET
+#ifdef USE_SDL_NET
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_net.h>
@@ -282,4 +282,4 @@ void I_PrintAddress(FILE* fp, UDP_CHANNEL *addr)
 */
 }
 
-#endif /* HAVE_NET */
+#endif /* USE_SDL_NET */

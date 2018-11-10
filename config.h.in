@@ -96,8 +96,7 @@
 #cmakedefine SDL_MIXER_FOUND 1
 
 /* Define if you want networkg ame support */
-#define HAVE_NET 1
-#define USE_SDL_NET 1
+#cmakedefine USE_SDL_NET 1
 
 /* Define if you have struct sockaddr_in6 */
 /* #define HAVE_IPv6 1 */
