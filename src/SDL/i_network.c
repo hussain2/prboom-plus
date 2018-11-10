@@ -36,9 +36,6 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
-#ifdef HAVE_NETINET_IN_H
-# include <netinet/in.h>
-#endif
 #include <stdlib.h>
 #include <errno.h>
 #ifdef HAVE_UNISTD_H

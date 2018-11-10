@@ -92,9 +92,7 @@
 #define HAVE_UNISTD_H
 #define HAVE_SYS_WAIT_H
 #define HAVE_GETOPT
-/* causes a duplicate define warning
-#define HAVE_NETINET_IN_H
-*/
+
 #define HAVE_DECL_SYS_SIGLIST 1
 
 /**/
