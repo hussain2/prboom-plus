@@ -4,9 +4,10 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
 #############
 
-project (PrBoom-Plus VERSION 2.5.1.5)
+project(PrBoom-Plus VERSION 2.5.1.5)
 
-include (CheckSymbolExists)
+include(CheckSymbolExists)
+include(CMakeDependentOption)
 
 #############
 
@@ -47,7 +48,7 @@ macro(set_if_not cond)
 endmacro()
 
 function (prepend_each prefix output)
-	set(tmp)
+	set(tmp ${${output}})
 	FOREACH(arg IN LISTS ARGN)
 		list(APPEND tmp "${prefix}${arg}")
 	ENDFOREACH()
@@ -58,16 +59,16 @@ endfunction()
 
 add_subdirectory (data)
 
-my_find_package(SDL2)
+my_find_package(SDL2 REQUIRED)
 my_find_package(SDL2_MIXER)
 my_find_package(SDL2_IMAGE)
 my_find_package(SDL2_NET)
-#my_find_package(PCRE)
+my_find_package(PCRE)
 my_find_package(FLUIDSYNTH)
-#my_find_package(MAD)
-#my_find_package(PORTMIDI)
-#my_find_package(VORBIS)
-#my_find_package(DUMB)
+my_find_package(MAD)
+my_find_package(PORTMIDI)
+my_find_package(VORBIS)
+my_find_package(DUMB)
 my_find_package(OpenGL)
 
 
@@ -82,140 +83,139 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/data/graphics/m_generl.ppm")
 	set(have_nonfree_graphics yes)
 endif()
 
-option(nonfree_graphics "build prboom.wad with non-free lumps" yes)
 option(dogs "support for helper dogs" yes)
-
 option(GL_DOOM "Define if you are building with OpenGL support" yes)
 
 #############
 
 set_if(SDL2_MIXER_FOUND HAVE_LIBSDL2_MIXER)
 set_if(SDL2_IMAGE_FOUND HAVE_LIBSDL2_IMAGE)
-set_if(PCRE_FOUND HAVE_LIBPCREPOSIX)
+#set_if(PCRE_FOUND HAVE_LIBPCREPOSIX)
 set_if(FLUIDSYNTH_FOUND HAVE_LIBFLUIDSYNTH)
-set_if(MAD_FOUND HAVE_LIBMAD)
-set_if(PORTMIDI_FOUND HAVE_LIBPORTMIDI)
-set_if(VORBIS_FOUND HAVE_LIBVORBISFILE)
-set_if(DUMB_FOUND HAVE_LIBDUMB)
+#set_if(MAD_FOUND HAVE_LIBMAD)
+#set_if(PORTMIDI_FOUND HAVE_LIBPORTMIDI)
+#set_if(VORBIS_FOUND HAVE_LIBVORBISFILE)
+#set_if(DUMB_FOUND HAVE_LIBDUMB)
 
 check_symbol_not_exists(snprintf stdio.h "snprintf")
 check_symbol_not_exists(vsnprintf stdio.h "vsnprintf" )
 
 #############
 
-prepend_each("src/SDL/" SDL_SOURCES i_main i_network i_video i_sound i_system i_joy i_sshot	SDL_windows_main)
-prepend_each("src/PCSOUND/" PCSOUND_SOURCES pcsound pcsound_sdl	pcsound_win32)
-prepend_each("src/MUSIC/" MUSIC_SOURCES dbopl dumbplayer flplayer madplayer midifile opl oplplayer opl_queue portmidiplayer vorbisplayer)
+CMAKE_DEPENDENT_OPTION(nonfree_graphics "build prboom.wad with non-free lumps" ON have_nonfree_graphics OFF)
+CMAKE_DEPENDENT_OPTION(USE_SDL_NET "Networkg support" ON SDL2_NET_FOUND OFF)
 
-prepend_each ("src/" SOURCE_FILES
-	am_map.c
-	doomdef.c
-	doomstat.c
-	dstrings.c
-	d_client.c
-	d_deh.c
-	#d_ipxgate.c # linux
-	d_items.c
-	d_main.c
-	e6y.c
-	e6y_launcher.c
-	f_finale.c
-	f_wipe.c
-	g_game.c
-	g_overflow.c
-	hu_lib.c
-	hu_stuff.c
-	hu_tracers.c
-	icon.c
-	info.c
-	i_capture.c
-	i_pcsound.c
-	lprintf.c
-	md5.c
-	memio.c
-	mus2mid.c
-	m_argv.c
-	m_bbox.c
-	m_cheat.c
-	m_menu.c
-	m_misc.c
-	m_random.c
-	p_ceilng.c
-	p_checksum.c
-	p_doors.c
-	p_enemy.c
-	p_floor.c
-	p_genlin.c
-	p_inter.c
-	p_lights.c
-	p_map.c
-	p_maputl.c
-	p_mobj.c
-	p_plats.c
-	p_pspr.c
-	p_saveg.c
-	p_setup.c
-	p_sight.c
-	p_spec.c
-	p_switch.c
-	p_telept.c
-	p_tick.c
-	p_user.c
-	r_bsp.c
-	r_data.c
-	r_demo.c
-	r_draw.c
-	r_filter.c
-	r_fps.c
-	r_main.c
-	r_patch.c
-	r_plane.c
-	r_segs.c
-	r_sky.c
-	r_things.c
-	sc_man.c
-	sounds.c
-	st_lib.c
-	st_stuff.c
-	s_advsound.c
-	s_sound.c
-	tables.c
-	version.c
-	v_video.c
-	wi_stuff.c
-	w_mmap.c
-	w_wad.c
-	z_bmalloc.c
-	z_zone.c
-	TEXTSCREEN/txt_sdl.c
-)
+#############
 
-list(APPEND SOURCE_FILES
-	${SDL_SOURCES}
-	${PCSOUND_SOURCES}
-	${MUSIC_SOURCES}
+prepend_each("src/SDL/" PRBOOM_SOURCES i_main i_network i_video i_sound i_system i_joy i_sshot SDL_windows_main)
+prepend_each("src/PCSOUND/" PRBOOM_SOURCES pcsound pcsound_sdl pcsound_win32)
+prepend_each("src/MUSIC/" PRBOOM_SOURCES dumbplayer flplayer madplayer portmidiplayer vorbisplayer dbopl midifile opl oplplayer opl_queue)
+
+set(music_sources)
+
+prepend_each ("src/" PRBOOM_SOURCES
+	am_map
+	doomdef
+	doomstat
+	dstrings
+	d_client
+	d_deh
+
+	d_items	
+	d_main
+	e6y
+	e6y_launcher
+	f_finale
+	f_wipe
+	g_game
+	g_overflow
+	hu_lib
+	hu_stuff
+	hu_tracers
+	icon
+	info
+	i_capture
+	i_pcsound
+	lprintf
+	md5
+	memio
+	mus2mid	
+	m_argv
+	m_bbox
+	m_cheat
+	m_menu
+	m_misc
+	m_random
+	p_ceilng
+	p_checksum
+	p_doors
+	p_enemy
+	p_floor
+	p_genlin
+	p_inter
+	p_lights
+	p_map
+	p_maputl
+	p_mobj
+	p_plats
+	p_pspr
+	p_saveg
+	p_setup
+	p_sight
+	p_spec
+	p_switch
+	p_telept
+	p_tick
+	p_user
+	r_bsp
+	r_data
+	r_demo
+	r_draw
+	r_filter
+	r_fps
+	r_main
+	r_patch
+	r_plane
+	r_segs
+	r_sky
+	r_things
+	sc_man
+	sounds
+	st_lib
+	st_stuff
+	s_advsound
+	s_sound	
+	tables
+	version
+	v_video
+	wi_stuff
+	w_mmap
+	w_wad
+	z_bmalloc
+	z_zone
+	TEXTSCREEN/txt_sdl
 )
 
 prepend_each ("src/" GL_SOURCE_FILES
-	gl_clipper.c
-	gl_detail.c
-	gl_drawinfo.c
-	gl_fbo.c
-	gl_gamma.c
-	gl_hires.c
-	gl_hqresize.c
-	gl_light.c
-	gl_main.c
-	gl_map.c
-	gl_missingtexture.c
-	gl_opengl.c
-	gl_preprocess.c
-	gl_shader.c
-	gl_shadow.c
-	gl_sky.c
-	gl_texture.c
-	gl_vertex.c
-	gl_wipe.c
+	gl_clipper
+	gl_detail
+	gl_drawinfo
+	gl_fbo
+	gl_gamma
+	gl_hires
+	gl_hqresize
+	gl_light
+	gl_main
+	gl_map
+	gl_missingtexture
+	gl_opengl
+	gl_preprocess
+	gl_shader
+	gl_shadow
+	gl_sky
+	gl_texture
+	gl_vertex
+	gl_wipe
 )
 
 set (LIBS 
@@ -223,21 +223,20 @@ set (LIBS
 	SDL2_MIXER::SDL2_MIXER
 	SDL2_IMAGE::SDL2_IMAGE
 	SDL2_NET::SDL2_NET
+#	PCRE::PCRE
 	FLUIDSYNTH::FLUIDSYNTH
+#	MAD::MAD
+#	PORTMIDI::PORTMIDI
+#	VORBIS::VORBIS
+#	DUMB::DUMB
 )
 
 #############
 
-add_executable(prboom-plus 
-	${SOURCE_FILES}
+add_executable(prboom-plus
+	${PRBOOM_SOURCES}
 )
 
-add_executable(glboom-plus 
-	${GL_SOURCE_FILES}
-	${SOURCE_FILES}
-)
-
-##
 target_include_directories(prboom-plus
 	PRIVATE ${PROJECT_BINARY_DIR} src
 )
@@ -247,15 +246,43 @@ target_compile_definitions(prboom-plus
 )
 target_link_libraries(prboom-plus ${LIBS})
 
-##
-target_include_directories(glboom-plus
-	PRIVATE ${PROJECT_BINARY_DIR} src
-)
-target_compile_definitions(glboom-plus
-	PRIVATE HAVE_CONFIG_H=1
-	PUBLIC GL_DOOM=1 $<$<CONFIG:DEBUG>:DEBUG=1>
-)
-target_link_libraries(glboom-plus ${LIBS} OpenGL::GL OpenGL::GLU)
+if(GL_DOOM)
+	add_executable(glboom-plus
+		${GL_SOURCE_FILES}
+		${PRBOOM_SOURCES}
+	)
+	target_include_directories(glboom-plus
+		PRIVATE ${PROJECT_BINARY_DIR} src
+	)
+	target_compile_definitions(glboom-plus
+		PRIVATE HAVE_CONFIG_H=1
+		PUBLIC GL_DOOM=1 $<$<CONFIG:DEBUG>:DEBUG=1>
+	)
+	target_link_libraries(glboom-plus ${LIBS} OpenGL::GL OpenGL::GLU)
+endif()
+
+#############
+
+if(USE_SDL_NET)
+
+	add_executable(prboom-plus_server 
+		src/d_server
+		src/SDL/i_system
+		src/SDL/i_network
+		src/SDL/SDL_windows_main
+	)
+	target_include_directories(prboom-plus_server
+		PRIVATE ${PROJECT_BINARY_DIR} src
+	)
+	target_compile_definitions(prboom-plus_server
+		PRIVATE HAVE_CONFIG_H=1 PRBOOM_SERVER=1
+		PUBLIC $<$<CONFIG:DEBUG>:DEBUG=1>
+	)
+	target_link_libraries(prboom-plus_server 
+		SDL2::SDL2
+		SDL2_NET::SDL2_NET
+	)
+endif()
 
 #############
 
