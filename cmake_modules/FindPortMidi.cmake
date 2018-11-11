@@ -32,10 +32,10 @@ find_package_handle_standard_args( PortMidi REQUIRED_VARS PORTMIDI_LIBRARIES POR
 
 mark_as_advanced( PORTMIDI_LIBRARY )
 
-if(PORTMIDI_FOUND AND NOT TARGET PortMidi::PortMidi)
-    add_library(PortMidi::PortMidi INTERFACE IMPORTED)
+if(PORTMIDI_FOUND AND NOT TARGET PORTMIDI::PORTMIDI)
+    add_library(PORTMIDI::PORTMIDI INTERFACE IMPORTED)
 	
-	target_include_directories(PortMidi::PortMidi INTERFACE "${PORTMIDI_INCLUDE_DIRS}")
-	target_link_libraries(PortMidi::PortMidi INTERFACE "${PORTMIDI_LIBRARIES}")
+	target_include_directories(PORTMIDI::PORTMIDI INTERFACE "${PORTMIDI_INCLUDE_DIRS}")
+	target_link_libraries(PORTMIDI::PORTMIDI INTERFACE "${PORTMIDI_LIBRARIES}")
 
 endif()

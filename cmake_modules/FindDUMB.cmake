@@ -24,9 +24,19 @@ find_package_handle_standard_args(DUMB DEFAULT_MSG
     DUMB_INCLUDE_DIR DUMB_LIBRARY)
 
 if(DUMB_FOUND)
+  set(DUMB_INCLUDE_DIRS ${DUMB_INCLUDE_DIR})
   set(DUMB_LIBRARIES ${DUMB_LIBRARY})
 else(DUMB_FOUND)
+  set(DUMB_INCLUDE_DIRS)
   set(DUMB_LIBRARIES)
 endif(DUMB_FOUND)
 
 mark_as_advanced(DUMB_INCLUDE_DIR DUMB_LIBRARY)
+
+if(DUMB_FOUND AND NOT TARGET DUMB::DUMB)
+    add_library(DUMB::DUMB INTERFACE IMPORTED)
+	
+	target_include_directories(DUMB::DUMB INTERFACE "${DUMB_INCLUDE_DIRS}")
+	target_link_libraries(DUMB::DUMB INTERFACE "${DUMB_LIBRARIES}")
+
+endif()
