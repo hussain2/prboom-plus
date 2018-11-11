@@ -11,16 +11,6 @@ include(CMakeDependentOption)
 
 #############
 
-#set(as_subproject LOG)
-
-macro(my_find_package)
-#	if (NOT "${ARGV0}" IN_LIST as_subproject)
-#		message("my_find_package:- calling find_package(${ARGV})")
-		find_package(${ARGV})
-#	endif()
-#	message("my_find_package:- done")
-endmacro()
-
 macro(check_symbol_not_exists func inc symb)
 	check_symbol_exists(${func} ${inc} ${func}_FOUND)	
 	if (NOT ${func}_FOUND)
@@ -55,22 +45,31 @@ function (prepend_each prefix output)
 	set(${output} ${tmp} PARENT_SCOPE)
 endfunction()
 
+function (add_if_target list)
+	set(tmp ${${list}})
+	FOREACH(arg IN LISTS ARGN)
+		if (TARGET ${arg})
+			list(APPEND tmp ${arg})
+		endif()
+	ENDFOREACH()
+	set(${list} ${tmp} PARENT_SCOPE)
+endfunction()
+
 #############
 
 add_subdirectory (data)
 
-my_find_package(SDL2 REQUIRED)
-my_find_package(SDL2_MIXER)
-my_find_package(SDL2_IMAGE)
-my_find_package(SDL2_NET)
-my_find_package(PCRE)
-my_find_package(FLUIDSYNTH)
-my_find_package(MAD)
-my_find_package(PORTMIDI)
-my_find_package(VORBIS)
-my_find_package(DUMB)
-my_find_package(OpenGL)
-
+find_package(SDL2 REQUIRED)
+find_package(SDL2_MIXER)
+find_package(SDL2_IMAGE)
+find_package(SDL2_NET)
+find_package(PCRE)
+find_package(FLUIDSYNTH)
+find_package(MAD)
+find_package(PORTMIDI)
+find_package(VORBIS)
+find_package(DUMB)
+find_package(OpenGL)
 
 #############
 
@@ -90,12 +89,12 @@ option(GL_DOOM "Define if you are building with OpenGL support" yes)
 
 set_if(SDL2_MIXER_FOUND HAVE_LIBSDL2_MIXER)
 set_if(SDL2_IMAGE_FOUND HAVE_LIBSDL2_IMAGE)
-#set_if(PCRE_FOUND HAVE_LIBPCREPOSIX)
+set_if(PCRE_FOUND HAVE_LIBPCREPOSIX)
 set_if(FLUIDSYNTH_FOUND HAVE_LIBFLUIDSYNTH)
-#set_if(MAD_FOUND HAVE_LIBMAD)
-#set_if(PORTMIDI_FOUND HAVE_LIBPORTMIDI)
-#set_if(VORBIS_FOUND HAVE_LIBVORBISFILE)
-#set_if(DUMB_FOUND HAVE_LIBDUMB)
+set_if(MAD_FOUND HAVE_LIBMAD)
+set_if(PORTMIDI_FOUND HAVE_LIBPORTMIDI)
+set_if(VORBIS_FOUND HAVE_LIBVORBISFILE)
+set_if(DUMB_FOUND HAVE_LIBDUMB)
 
 check_symbol_not_exists(snprintf stdio.h "snprintf")
 check_symbol_not_exists(vsnprintf stdio.h "vsnprintf" )
@@ -218,17 +217,18 @@ prepend_each ("src/" GL_SOURCE_FILES
 	gl_wipe
 )
 
-set (LIBS 
-	SDL2::SDL2
+set (LIBS SDL2::SDL2)
+
+add_if_target(LIBS
 	SDL2_MIXER::SDL2_MIXER
 	SDL2_IMAGE::SDL2_IMAGE
 	SDL2_NET::SDL2_NET
-#	PCRE::PCRE
+	PCRE::PCRE
 	FLUIDSYNTH::FLUIDSYNTH
-#	MAD::MAD
-#	PORTMIDI::PORTMIDI
-#	VORBIS::VORBIS
-#	DUMB::DUMB
+	MAD::MAD
+	PORTMIDI::PORTMIDI
+	VORBIS::VORBIS
+	DUMB::DUMB
 )
 
 #############
