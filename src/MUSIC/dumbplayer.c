@@ -63,7 +63,7 @@ const music_player_t db_player =
   NULL
 };
 
-#else // HAVE_DUMB
+#else // HAVE_LIBDUMB
 
 #include <dumb.h>
 #include <string.h>
@@ -256,7 +256,7 @@ const music_player_t db_player =
 
 
 
-#endif // HAVE_DUMB
+#endif // HAVE_LIBDUMB
 
 
 

@@ -115,5 +115,5 @@ pcsound_driver_t pcsound_win32_driver =
     PCSound_Win32_Shutdown,
 };
 
-#endif /* #ifdef _WIN32 */
+#endif /* #ifdef USE_WIN32_PCSOUND_DRIVER */
 

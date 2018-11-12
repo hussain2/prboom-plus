@@ -98,10 +98,6 @@
  * SUCH DAMAGE.
  */
 
-#if defined(LIBC_SCCS) && !defined(lint)
-static char sccsid[] = "@(#)getopt.c  8.3 (Berkeley) 4/27/95";
-#endif /* LIBC_SCCS and not lint */
-
 int opterr = 1,   /* if error message should be printed */
   optind = 1,   /* index into parent argv vector */
   optopt,     /* character checked for validity */
