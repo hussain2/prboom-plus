@@ -1,4 +1,12 @@
 
+include(CMakeDependentOption)
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/data/graphics/m_generl.ppm")
+	set(have_nonfree_graphics yes)
+endif()
+
+CMAKE_DEPENDENT_OPTION(USE_NONFREE_GRAPHICS "build prboom.wad with non-free lumps" ON have_nonfree_graphics OFF)
+
 add_executable(rdatawad
 	rd_main.c
 	rd_util.c rd_util.h
@@ -15,6 +23,7 @@ target_compile_definitions(rdatawad
 	PRIVATE HAVE_CONFIG_H=1
 	PUBLIC $<$<CONFIG:DEBUG>:DEBUG=1>
 )
+set_target_properties(rdatawad PROPERTIES DEBUG_POSTFIX -d)
 
 add_custom_target(prboom_wad DEPENDS prboom-plus.wad)
 
@@ -58,16 +67,16 @@ set(DOG_SOUNDS dsdgsit dsdgatk dsdgact dsdgdth dsdgpain)
 set(NONFREE_DOG_SPRITES 32,59,dogsd5 32,59,dogsh5 32,59,dogsc5 32,59,dogsg5 32,59,dogsb1 32,59,dogsa5 32,59,dogse5 32,59,dogsc1 32,59,dogsd1 32,59,dogsb5 32,59,dogsf5 32,59,dogsa1 32,59,dogse1 32,59,dogsf1 32,59,dogsd2d8 32,59,dogsh2 32,59,dogsg1 32,59,dogsh8 32,59,dogse8 32,59,dogsd4d6 32,59,dogsh4 32,59,dogsa2a8 32,59,dogse2 32,59,dogsf8 32,59,dogsh1 32,59,dogsa4a6 32,59,dogse4 32,59,dogsb4b6 32,59,dogsf4 32,59,dogsh6 32,59,dogsb2b8 32,59,dogsf2 32,59,dogsc2c8 32,59,dogsg2 32,59,dogsg6 32,59,dogsc4c6 32,59,dogsg4 32,59,dogsg8 32,59,dogsf6 32,59,dogsn0 32,59,dogse6 32,59,dogsd3d7 32,59,dogsh3 32,59,dogsh7 32,59,dogsi0 32,59,dogsa3a7 32,59,dogse3 32,59,dogsb3b7 32,59,dogsf3 32,59,dogsf7 32,59,dogse7 32,59,dogsc3c7 32,59,dogsg3 32,59,dogsg7 32,59,dogsj0 32,59,dogsk0 32,59,dogsl0 32,59,dogsm0)
 set(FREE_DOG_SPRITES 10,30,dogsa1 14,29,dogsa2a8 15,29,dogsa3a7 12,29,dogsa4a6 10,30,dogsa5 9,30,dogsb1 13,29,dogsb2b8 14,29,dogsb3b7 12,29,dogsb4b6 9,29,dogsb5 10,30,dogsc1 11,29,dogsc2c8 14,29,dogsc3c7 12,29,dogsc4c6 10,30,dogsc5 10,30,dogsd1 12,29,dogsd2d8 14,29,dogsd3d7 13,29,dogsd4d6 9,29,dogsd5 10,30,dogse1 14,29,dogse2 14,29,dogse3 13,29,dogse4 9,29,dogse5 13,29,dogse6 14,29,dogse7 14,29,dogse8 10,30,dogsf1 13,29,dogsf2 16,29,dogsf3 13,29,dogsf4 9,28,dogsf5 13,29,dogsf6 16,29,dogsf7 13,29,dogsf8 9,30,dogsg1 12,29,dogsg2 13,29,dogsg3 11,29,dogsg4 8,28,dogsg5 11,29,dogsg6 13,29,dogsg7 12,29,dogsg8 9,25,dogsh1 10,26,dogsh2 11,26,dogsh3 11,26,dogsh4 9,26,dogsh5 11,26,dogsh6 11,26,dogsh7 10,26,dogsh8 10,30,dogsi0 10,30,dogsj0 11,27,dogsk0 11,20,dogsl0 12,15,dogsm0 13,15,dogsn0)
 
-if(${dogs})
+if(${DOGS})
 	list(APPEND _SOUNDS ${DOG_SOUNDS})
-	if(${nonfree_graphics})
+	if(${USE_NONFREE_GRAPHICS})
 		list(APPEND _SPRITES ${NONFREE_DOG_SPRITES})
 	else()
 		list(APPEND _SPRITES ${FREE_DOG_SPRITES})
 	endif()
 endif()
 
-if(${nonfree_graphics})
+if(${USE_NONFREE_GRAPHICS})
 	set(sound_dir sounds)
 	set(sprite_dir sprites)
 	list(APPEND _SOUNDS ${NONFREE_SOUNDS})

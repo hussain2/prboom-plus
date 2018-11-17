@@ -20,14 +20,25 @@
         {
           "name": "CMAKE_TOOLCHAIN_FILE",
           "value": "E:/Users/micro/source/repos/vcpkg/scripts/buildsystems/vcpkg.cmake"
-        },
+        }
+      ]
+    },
+    {
+      "buildCommandArgs": "-v",
+      "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
+      "cmakeCommandArgs": "", //--debug-output
+      "configurationType": "Release",
+      "ctestCommandArgs": "",
+      "generator": "Ninja",
+      "inheritEnvironments": [
+        "msvc_x86"
+      ],
+      "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
+      "name": "x86-Release",
+      "variables": [
         {
-          "name": "nonfree_graphics",
-          "value": "ON"
-        },
-        {
-          "name": "dogs",
-          "value": "ON"
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "E:/Users/micro/source/repos/vcpkg/scripts/buildsystems/vcpkg.cmake"
         }
       ]
     }
