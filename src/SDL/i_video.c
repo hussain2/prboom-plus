@@ -519,11 +519,9 @@ void I_FinishUpdate (void)
   // is noticably jerkier with I_SkipFrame
   // if (I_SkipFrame())return;
 
-#ifdef MONITOR_VISIBILITY
   //!!if (!(SDL_GetAppState()&SDL_APPACTIVE)) {
   //!!  return;
   //!!}
-#endif
 
 #ifdef GL_DOOM
   if (V_GetMode() == VID_MODEGL) {
