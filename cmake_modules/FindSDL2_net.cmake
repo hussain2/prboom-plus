@@ -14,6 +14,8 @@
 # correspond to the ./configure --prefix=$SDLDIR
 # used in building SDL.
 #
+# Modified by Hussain AlMutawa. Added target definition.
+#
 # Created by Eric Wing. This was influenced by the FindSDL.cmake
 # module, but with modifications to recognize OS X frameworks and
 # additional Unix paths (FreeBSD, etc).
@@ -90,7 +92,14 @@ mark_as_advanced(SDL2_NET_LIBRARY SDL2_NET_INCLUDE_DIR)
 if(SDL2_NET_FOUND AND NOT TARGET SDL2_NET::SDL2_NET)
     add_library(SDL2_NET::SDL2_NET INTERFACE IMPORTED)
 	
-	target_include_directories(SDL2_NET::SDL2_NET INTERFACE "${SDL2_NET_INCLUDE_DIRS}")
-	target_link_libraries(SDL2_NET::SDL2_NET INTERFACE "${SDL2_NET_LIBRARIES}")
+	target_include_directories(SDL2_NET::SDL2_NET
+		INTERFACE
+			${SDL2_NET_INCLUDE_DIRS}
+	)
+	
+	target_link_libraries(SDL2_NET::SDL2_NET
+		INTERFACE
+			${SDL2_NET_LIBRARIES}
+	)
 
 endif()

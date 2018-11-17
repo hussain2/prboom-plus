@@ -17,6 +17,8 @@
 # used in building SDL2.
 # l.e.galup 9-20-02
 #
+# Modified by Hussain AlMutawa. Added target definition.
+#
 # Modified by Eric Wing.
 # Added code to assist with automated building by using environmental variables
 # and providing a more controlled/consistent search behavior.
@@ -159,7 +161,14 @@ FIND_PACKAGE_HANDLE_STANDARD_ARGS(SDL2_IMAGE REQUIRED_VARS SDL2_IMAGE_LIBRARY SD
 if(SDL2_IMAGE_FOUND AND NOT TARGET SDL2_IMAGE::SDL2_IMAGE)
     add_library(SDL2_IMAGE::SDL2_IMAGE INTERFACE IMPORTED)
 	
-	target_include_directories(SDL2_IMAGE::SDL2_IMAGE INTERFACE "${SDL2_IMAGE_INCLUDE_DIR}")
-	target_link_libraries(SDL2_IMAGE::SDL2_IMAGE INTERFACE "${SDL2_IMAGE_LIBRARY}")
+	target_include_directories(SDL2_IMAGE::SDL2_IMAGE
+		INTERFACE
+			${SDL2_IMAGE_INCLUDE_DIR}
+	)
+
+	target_link_libraries(SDL2_IMAGE::SDL2_IMAGE
+		INTERFACE
+			${SDL2_IMAGE_LIBRARY}
+	)
 
 endif()

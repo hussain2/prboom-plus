@@ -29,6 +29,8 @@
 # $SDL2DIR is an environment variable that would correspond to the
 # ./configure --prefix=$SDL2DIR used in building SDL2.
 #
+# Modified by Hussain AlMutawa. Added target definition.
+#
 # Created by Andreas Löf.  This was influenced by the FindSDL_mixer.cmake
 # module, but with modifications to use SDL2.
 #
@@ -133,7 +135,14 @@ mark_as_advanced(SDL2_MIXER_LIBRARY SDL2_MIXER_INCLUDE_DIR)
 if(SDL2_MIXER_FOUND AND NOT TARGET SDL2_MIXER::SDL2_MIXER)
     add_library(SDL2_MIXER::SDL2_MIXER INTERFACE IMPORTED)
 	
-	target_include_directories(SDL2_MIXER::SDL2_MIXER INTERFACE "${SDL2_MIXER_INCLUDE_DIRS}")
-	target_link_libraries(SDL2_MIXER::SDL2_MIXER INTERFACE "${SDL2_MIXER_LIBRARIES}")
+	target_include_directories(SDL2_MIXER::SDL2_MIXER
+		INTERFACE
+			${SDL2_MIXER_INCLUDE_DIRS}
+	)
+
+	target_link_libraries(SDL2_MIXER::SDL2_MIXER
+		INTERFACE
+			${SDL2_MIXER_LIBRARIES}
+	)
 
 endif()
