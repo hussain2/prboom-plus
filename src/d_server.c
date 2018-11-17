@@ -50,7 +50,7 @@
 #include <signal.h>
 #include <sys/types.h>
 
-#ifdef USE_SDL_NET
+#ifdef USE_SDL2_NET
 #include <SDL2/SDL.h>
 #endif
 
@@ -280,7 +280,7 @@ void doexit(void)
   BroadcastPacket(&packet, sizeof packet);
 }
 
-#ifndef USE_SDL_NET
+#ifndef USE_SDL2_NET
 static void I_InitSockets(int v4port)
 {
   v4socket = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -334,7 +334,7 @@ static int badplayer(int n) { return (n < 0 || n >= MAXPLAYERS); }
 
 int main(int argc, char** argv)
 {
-#ifndef USE_SDL_NET
+#ifndef USE_SDL2_NET
   int localport = 5030;
 #else
   Uint16 localport = 5030;
@@ -446,7 +446,7 @@ int main(int argc, char** argv)
   atexit(doexit); // heh
   signal(SIGTERM, sig_handler);
   signal(SIGINT , sig_handler);
-#ifndef USE_SDL_NET
+#ifndef USE_SDL2_NET
   signal(SIGQUIT, sig_handler);
   signal(SIGKILL, sig_handler);
   signal(SIGHUP , sig_handler);
@@ -484,7 +484,7 @@ int main(int argc, char** argv)
 
     if (n == numplayers) break; // Full game
     playerstate[n] = pc_connected;
-#ifndef USE_SDL_NET
+#ifndef USE_SDL2_NET
     remoteaddr[n] = sentfrom;
 #else
     if (sentfrom==-1)
@@ -493,7 +493,7 @@ int main(int argc, char** argv)
 
     printf("Join by ");
     I_PrintAddress(stdout, &remoteaddr[n]);
-#ifdef USE_SDL_NET
+#ifdef USE_SDL2_NET
     printf(" (channel %d)",remoteaddr[n]);
 #endif
     printf(" as player %d\n",n);

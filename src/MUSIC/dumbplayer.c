@@ -34,7 +34,7 @@
 
 #include "musicplayer.h"
 
-#ifndef HAVE_LIBDUMB
+#ifndef USE_DUMB
 #include <string.h>
 
 static const char *db_name (void)
@@ -63,7 +63,7 @@ const music_player_t db_player =
   NULL
 };
 
-#else // HAVE_LIBDUMB
+#else // USE_DUMB
 
 #include <dumb.h>
 #include <string.h>
@@ -256,7 +256,7 @@ const music_player_t db_player =
 
 
 
-#endif // HAVE_LIBDUMB
+#endif // USE_DUMB
 
 
 

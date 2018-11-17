@@ -37,7 +37,7 @@
 
 #include "musicplayer.h"
 
-#ifndef HAVE_LIBPORTMIDI
+#ifndef USE_LIBPORTMIDI
 #include <string.h>
 
 static const char *pm_name (void)
@@ -66,7 +66,7 @@ const music_player_t pm_player =
   NULL
 };
 
-#else // HAVE_LIBPORTMIDI
+#else // USE_LIBPORTMIDI
 
 #include <portmidi.h>
 #include <porttime.h>
@@ -527,5 +527,5 @@ const music_player_t pm_player =
 };
 
 
-#endif // HAVE_LIBPORTMIDI
+#endif // USE_LIBPORTMIDI
 

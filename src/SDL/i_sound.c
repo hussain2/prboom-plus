@@ -39,9 +39,6 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#ifdef SDL_MIXER_FOUND
-#define HAVE_MIXER
-#endif
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_audio.h>
@@ -51,7 +48,7 @@
 
 #include <SDL2/SDL_version.h>
 #include <SDL2/SDL_thread.h>
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
 #define USE_RWOPS
 #include <SDL2/SDL_mixer.h>
 #endif
@@ -568,7 +565,7 @@ void I_ShutdownSound(void)
   if (sound_inited)
   {
     lprintf(LO_INFO, "I_ShutdownSound: ");
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
     Mix_CloseAudio();
 #endif
     SDL_CloseAudio();
@@ -608,7 +605,7 @@ void I_InitSound(void)
 
   if (!use_experimental_music)
   {
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
 
     /* Initialize variables */
     audio_rate = snd_samplerate;
@@ -630,9 +627,9 @@ void I_InitSound(void)
     lprintf(LO_INFO," configured audio device with %d samples/slice\n", SAMPLECOUNT);
   }
   else
-#else // HAVE_MIXER
+#else // USE_SDL2_MIXER
   }
-#endif // HAVE_MIXER
+#endif // USE_SDL2_MIXER
   {
     // Open the audio device
     audio.freq = snd_samplerate;
@@ -781,7 +778,7 @@ static void Exp_ShutdownMusic(void);
 
 
 
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
 
 #include "mus2mid.h"
 
@@ -807,7 +804,7 @@ void I_ShutdownMusic(void)
     Exp_ShutdownMusic ();
     return;
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   if (music_tmp) {
     int i;
     char *name;
@@ -834,7 +831,7 @@ void I_InitMusic(void)
     Exp_InitMusic ();
     return;
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   if (!music_tmp) {
 #ifndef _WIN32
     music_tmp = strdup("/tmp/"PACKAGE_TARNAME"-music-XXXXXX");
@@ -863,7 +860,7 @@ void I_PlaySong(int handle, int looping)
     Exp_PlaySong (handle, looping);
     return;
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   if ( music[handle] ) {
     //Mix_FadeInMusic(music[handle], looping ? -1 : 0, 500);
     Mix_PlayMusic(music[handle], looping ? -1 : 0);
@@ -883,7 +880,7 @@ void I_PauseSong (int handle)
     Exp_PauseSong (handle);
     return;
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   switch(mus_pause_opt) {
   case 0:
       I_StopSong(handle);
@@ -915,7 +912,7 @@ void I_ResumeSong (int handle)
     Exp_ResumeSong (handle);
     return;
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   switch(mus_pause_opt) {
   case 0:
       I_PlaySong(handle,1);
@@ -945,7 +942,7 @@ void I_StopSong(int handle)
     Exp_StopSong (handle);
     return;
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   // halt music playback
   Mix_HaltMusic();
 #endif
@@ -958,7 +955,7 @@ void I_UnRegisterSong(int handle)
     Exp_UnRegisterSong (handle);
     return;
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   if ( music[handle] ) {
     Mix_FreeMusic(music[handle]);
     music[handle] = NULL;
@@ -984,7 +981,7 @@ int I_RegisterSong(const void *data, size_t len)
   {
     return Exp_RegisterSong (data, len);
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
 
   if (music_tmp == NULL)
     return 0;
@@ -1136,7 +1133,7 @@ int I_RegisterMusic( const char* filename, musicinfo_t *song )
   }
 
 
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   if (!filename) return 1;
   if (!song) return 1;
   music[0] = Mix_LoadMUS(filename);
@@ -1164,7 +1161,7 @@ void I_SetMusicVolume(int volume)
     Exp_SetMusicVolume (volume);
     return;
   }
-#ifdef HAVE_MIXER
+#ifdef USE_SDL2_MIXER
   Mix_VolumeMusic(volume*8);
 
 #ifdef _WIN32

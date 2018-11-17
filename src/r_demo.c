@@ -212,7 +212,7 @@ void R_ResetAfterTeleport(player_t *player)
 // DemoEx stuff
 //
 
-#ifdef HAVE_LIBPCREPOSIX
+#ifdef USE_PCRE_PCREPOSIX
 #include "pcreposix.h"
 #endif
 
@@ -1319,7 +1319,7 @@ int ParseDemoPattern(const char *str, waddata_t* waddata, char **missed, dboolea
   return processed;
 }
 
-#ifdef HAVE_LIBPCREPOSIX
+#ifdef USE_PCRE_PCREPOSIX
 int DemoNameToWadData(const char * demoname, waddata_t *waddata, patterndata_t *patterndata)
 {
   int numwadfiles_required = 0;
@@ -1401,7 +1401,7 @@ int DemoNameToWadData(const char * demoname, waddata_t *waddata, patterndata_t *
 
   return numwadfiles_required;
 }
-#endif // HAVE_LIBPCREPOSIX
+#endif // USE_PCRE_PCREPOSIX
 
 void WadDataToWadFiles(waddata_t *waddata)
 {
@@ -1551,7 +1551,7 @@ int CheckAutoDemo(void)
 {
   int result = false;
   if (M_CheckParm("-auto"))
-#ifndef HAVE_LIBPCREPOSIX
+#ifndef USE_PCRE_PCREPOSIX
     I_Error("Cannot process -auto - "
         PACKAGE_NAME " was compiled without LIBPCRE support");
 #else
@@ -1592,7 +1592,7 @@ int CheckAutoDemo(void)
       }
     }
   }
-#endif // HAVE_LIBPCREPOSIX
+#endif // USE_PCRE_PCREPOSIX
 
   return result;
 }

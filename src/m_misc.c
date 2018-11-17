@@ -1648,7 +1648,7 @@ void M_DoScreenShot (const char* fname)
 #define SCREENSHOT_DIR "."
 #endif
 
-#ifdef HAVE_LIBSDL2_IMAGE
+#ifdef USE_SDL2_IMAGE
 #define SCREENSHOT_EXT ".png"
 #else
 #define SCREENSHOT_EXT ".bmp"

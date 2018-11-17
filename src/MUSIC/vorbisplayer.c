@@ -36,7 +36,7 @@
 
 #include "musicplayer.h"
 
-#ifndef HAVE_LIBVORBISFILE
+#ifndef USE_VORBIS
 #include <string.h>
 
 static const char *vorb_name (void)
@@ -65,7 +65,7 @@ const music_player_t vorb_player =
   NULL
 };
 
-#else // HAVE_LIBVORBISFILE
+#else // USE_VORBIS
 
 
 #include <stdlib.h>
@@ -465,4 +465,4 @@ const music_player_t vorb_player =
   vorb_render
 };
 
-#endif // HAVE_LIBVORBISFILE
+#endif // USE_VORBIS

@@ -399,7 +399,7 @@ void D_Display (fixed_t frac)
 
   // menus go directly to the screen
   M_Drawer();          // menu is drawn even on top of everything
-#ifdef USE_SDL_NET
+#ifdef USE_SDL2_NET
   NetUpdate();         // send out any new accumulation
 #else
   D_BuildNewTiccmds();

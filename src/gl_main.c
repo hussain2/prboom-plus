@@ -424,7 +424,7 @@ void gld_Init(int width, int height)
   gld_InitDetail();
   gld_InitShadows();
 
-#ifdef HAVE_LIBSDL2_IMAGE
+#ifdef USE_SDL2_IMAGE
   gld_InitMapPics();
   gld_InitHiRes();
 #endif

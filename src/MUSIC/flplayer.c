@@ -34,7 +34,7 @@
 
 #include "musicplayer.h"
 
-#ifndef HAVE_LIBFLUIDSYNTH
+#ifndef USE_LIBFLUIDSYNTH
 #include <string.h>
 
 static const char *fl_name (void)
@@ -63,7 +63,7 @@ const music_player_t fl_player =
   NULL
 };
 
-#else // HAVE_LIBFLUIDSYNTH
+#else // USE_LIBFLUIDSYNTH
 
 #include <fluidsynth.h>
 #include "i_sound.h" // for snd_soundfont, mus_fluidsynth_gain
@@ -509,5 +509,5 @@ const music_player_t fl_player =
 };
 
 
-#endif // HAVE_LIBFLUIDSYNTH
+#endif // USE_LIBFLUIDSYNTH
 

@@ -36,7 +36,7 @@
 
 #include "musicplayer.h"
 
-#ifndef HAVE_LIBMAD
+#ifndef USE_LIBMAD
 #include <string.h>
 
 static const char *mp_name (void)
@@ -65,7 +65,7 @@ const music_player_t mp_player =
   NULL
 };
 
-#else // HAVE_LIBMAD
+#else // USE_LIBMAD
 
 
 #include <stdlib.h>
@@ -332,4 +332,4 @@ const music_player_t mp_player =
   mp_render
 };
 
-#endif // HAVE_LIBMAD
+#endif // USE_LIBMAD

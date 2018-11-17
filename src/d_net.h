@@ -188,7 +188,7 @@ typedef struct
 } doomcom_t;
 
 // Create any new ticcmds and broadcast to other players.
-#ifdef USE_SDL_NET
+#ifdef USE_SDL2_NET
 void NetUpdate (void);
 #else
 void D_BuildNewTiccmds(void);
