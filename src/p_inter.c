@@ -486,7 +486,7 @@ void P_TouchSpecialThing(mobj_t *special, mobj_t *toucher)
       break;
 
     case SPR_PMAP:
-      if (!P_GivePower (player, pw_allmap))
+		if (!P_GivePower(player, pw_allmap) && comp[comp_computer_map])
         return;
       player->message = s_GOTMAP; // Ty 03/22/98 - externalized
       sound = sfx_getpow;

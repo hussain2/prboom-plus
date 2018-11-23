@@ -117,6 +117,8 @@ enum {
   comp_maxhealth,
   comp_translucency,
 
+  comp_computer_map,
+
   COMP_NUM,      /* cph - should be last in sequence */
   COMP_TOTAL=32  // Some extra room for additional variables
 };

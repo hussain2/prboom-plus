@@ -2437,6 +2437,8 @@ void G_Compatibility(void)
     { boom_compatibility_compatibility, prboom_6_compatibility },
     // comp_translucency - No predefined translucency for some things
     { boom_compatibility_compatibility, prboom_6_compatibility },
+	// comp_computer_map - Don't pick multiple computer maps
+	{ prboom_6_compatibility, prboom_6_compatibility },
   };
   unsigned int i;
 
