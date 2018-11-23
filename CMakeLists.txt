@@ -198,6 +198,7 @@ prepend_each ("src/" PRBOOM_SOURCES
 	z_bmalloc
 	z_zone
 	TEXTSCREEN/txt_sdl
+	hm_sin
 )
 
 prepend_each ("src/" GL_SOURCE_FILES

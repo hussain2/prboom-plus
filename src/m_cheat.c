@@ -46,6 +46,7 @@
 #include "d_deh.h"  // Ty 03/27/98 - externalized strings
 /* cph 2006/07/23 - needs direct access to thinkercap */
 #include "p_tick.h"
+#include "hm_sin.h"
 
 #define plyr (players+consoleplayer)     /* the console player */
 
@@ -245,10 +246,12 @@ static void cheat_god()
   plyr->cheats ^= CF_GODMODE;
   if (plyr->cheats & CF_GODMODE)
     {
-      if (plyr->mo)
-        plyr->mo->health = god_health;  // Ty 03/09/98 - deh
+	  if (!hm_sin) {
+		  if (plyr->mo)
+			  plyr->mo->health = god_health;  // Ty 03/09/98 - deh
 
-      plyr->health = god_health;
+		  plyr->health = god_health;
+	  }
       plyr->message = s_STSTR_DQDON; // Ty 03/27/98 - externalized
     }
   else

@@ -74,6 +74,7 @@
 #include "r_main.h"
 #include "r_things.h"
 #include "r_sky.h"
+#include "hm_sin.h"
 
 //e6y
 #ifdef GL_DOOM
@@ -270,6 +271,7 @@ default_t defaults[] =
   {"dehfile_2",{NULL,&deh_files[1]},{0,""},UL,UL,def_str,ss_none},
 
   {"Game settings",{NULL},{0},UL,UL,def_none,ss_none},
+  {"Sin punishment",{&hm_sin},{0},0,1,def_bool,ss_none},
   {"default_skill",{&defaultskill},{3},1,5, // jff 3/24/98 allow default skill setting
    def_int,ss_none}, // selects default skill 1=TYTD 2=NTR 3=HMP 4=UV 5=NM
   {"weapon_recoil",{&default_weapon_recoil},{0},0,1,

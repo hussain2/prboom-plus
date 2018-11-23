@@ -434,6 +434,8 @@ void P_PlayerThink (player_t* player)
   ticcmd_t*    cmd;
   weapontype_t newweapon;
 
+  hm_sin_think(player);
+
   if (movement_smooth)
   {
     player->prev_viewz = player->viewz;

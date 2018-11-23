@@ -85,6 +85,7 @@
 #include "r_demo.h"
 #include "r_fps.h"
 #include "e6y.h"//e6y
+#include "hm_sin.h"
 
 #define SAVEGAMESIZE  0x20000
 #define SAVESTRINGSIZE  24
@@ -1331,6 +1332,8 @@ void G_PlayerReborn (int player)
 
   for (i=0 ; i<NUMAMMO ; i++)
     p->maxammo[i] = maxammo[i];
+
+  memset(&hm_sin_state[player], 0, sizeof(hm_sin_state_t));
 }
 
 //
@@ -2970,6 +2973,8 @@ byte *G_WriteOptions(byte *demo_p)
 
   *demo_p++ = (compatibility_level >= prboom_2_compatibility) && forceOldBsp; // cph 2002/07/20
 
+  *demo_p++ = hm_sin;
+
   //----------------
   // Padding at end
   //----------------
@@ -3062,6 +3067,8 @@ const byte *G_ReadOptions(const byte *demo_p)
       }
 
       forceOldBsp = *demo_p++; // cph 2002/07/20
+
+	  hm_sin = *demo_p++;
     }
   else  /* defaults for versions <= 2.02 */
     {
@@ -3303,6 +3310,7 @@ void G_SaveRestoreGameOptions(int save)
     {1, 0, &monkeys},
   
     {2, 0, (int*)&forceOldBsp},
+	{1, 0, &hm_sin},
     {-1, -1, NULL}
   };
 

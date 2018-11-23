@@ -131,6 +131,8 @@ int ffmap;
 
 dboolean advancedemo;
 
+extern int hm_sin;
+
 char    *basesavegame;             // killough 2/16/98: savegame directory
 
 //jff 4/19/98 list of standard IWAD names
@@ -1426,6 +1428,9 @@ static void D_DoomMainSetup(void)
   else
     if (M_CheckParm ("-deathmatch"))
       deathmatch = 1;
+
+  if (M_CheckParm("-sin"))
+	  hm_sin = 1;
 
   {
     switch ( gamemode ) {

@@ -43,6 +43,7 @@
 #include "lprintf.h"
 #include "s_advsound.h"
 #include "e6y.h"//e6y
+#include "hm_sin.h"
 
 byte *save_p;
 
@@ -71,6 +72,11 @@ void P_ArchivePlayers (void)
           if (dest->psprites[j].state)
             dest->psprites[j].state =
               (state_t *)(dest->psprites[j].state-states);
+
+		if (hm_sin) {
+			memcpy(save_p, &hm_sin_state[i], sizeof(hm_sin_state_t));
+			save_p += sizeof(hm_sin_state_t);
+		}
       }
 }
 
@@ -100,6 +106,11 @@ void P_UnArchivePlayers (void)
           if (players[i]. psprites[j].state)
             players[i]. psprites[j].state =
               &states[ (int)players[i].psprites[j].state ];
+
+		if (hm_sin) {
+			memcpy(&hm_sin_state[i], save_p, sizeof(hm_sin_state_t));
+			save_p += sizeof(hm_sin_state_t);
+		}
       }
 }
 

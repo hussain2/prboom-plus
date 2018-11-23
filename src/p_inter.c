@@ -45,6 +45,7 @@
 #include "p_inter.h"
 #include "p_enemy.h"
 #include "hu_tracers.h"
+#include "hm_sin.h"
 
 #ifdef __GNUG__
 #pragma implementation "p_inter.h"
@@ -108,9 +109,6 @@ static dboolean P_GiveAmmo(player_t *player, ammotype_t ammo, int num)
     I_Error ("P_GiveAmmo: bad type %i", ammo);
 #endif
 
-  if ( player->ammo[ammo] == player->maxammo[ammo]  )
-    return false;
-
   if (num)
     num *= clipammo[ammo];
   else
@@ -121,11 +119,21 @@ static dboolean P_GiveAmmo(player_t *player, ammotype_t ammo, int num)
     num <<= 1;
 
   oldammo = player->ammo[ammo];
+
+	if (oldammo >= player->maxammo[ammo]) {
+		if (hm_is_sinner(player))
+			hm_add_sin(player, num);
+		else
+			return false;		
+	} else {
+		hm_add_sin(player, oldammo + num - player->maxammo[ammo]);
+	}
+
   player->ammo[ammo] += num;
 
-  if (player->ammo[ammo] > player->maxammo[ammo])
-    player->ammo[ammo] = player->maxammo[ammo];
-
+  if (!hm_sin && player->ammo[ammo] > player->maxammo[ammo]) 
+	player->ammo[ammo] = player->maxammo[ammo];
+  
   // If non zero ammo, don't change up weapons, player was lower on purpose.
   if (oldammo)
     return true;
@@ -223,11 +231,24 @@ static dboolean P_GiveWeapon(player_t *player, weapontype_t weapon, dboolean dro
 
 static dboolean P_GiveBody(player_t *player, int num)
 {
-  if (player->health >= maxhealth)
-    return false; // Ty 03/09/98 externalized MAXHEALTH to maxhealth
+  if (player->health >= maxhealth) {
+	  if (hm_is_sinner(player)) {
+		  player->health += num;
+		  player->mo->health = player->health;
+		  hm_add_3_sin(player, num);
+		  return true;
+	  } else
+		  return false; // Ty 03/09/98 externalized MAXHEALTH to maxhealth
+  }
+
   player->health += num;
-  if (player->health > maxhealth)
-    player->health = maxhealth;
+  if (player->health > maxhealth) {
+	  if (hm_sin)
+		  hm_add_3_sin(player, player->health - maxhealth);
+	  else
+		  player->health = maxhealth;
+  }
+
   player->mo->health = player->health;
   return true;
 }
@@ -241,10 +262,17 @@ static dboolean P_GiveBody(player_t *player, int num)
 static dboolean P_GiveArmor(player_t *player, int armortype)
 {
   int hits = armortype*100;
-  if (player->armorpoints >= hits)
-    return false;   // don't pick up
-  player->armortype = armortype;
-  player->armorpoints = hits;
+  if (!hm_is_sinner(player) && player->armorpoints >= hits)
+    return false;   // don't pick up  
+  if (hm_sin) {
+	  hm_add_3_sin(player, player->armorpoints);
+	  if (player->armorpoints < hits)
+		  player->armortype = armortype;
+	  player->armorpoints += hits;
+  } else {
+	  player->armortype = armortype;
+	  player->armorpoints = hits;
+  }
   return true;
 }
 
@@ -283,14 +311,28 @@ dboolean P_GivePower(player_t *player, int power)
           return false;
         break;
       case pw_strength:
-        P_GiveBody(player,100);
+        if (!P_GiveBody(player,100) && hm_sin)
+			return false;
         break;
+	  case pw_invulnerability:
+		  if (hm_is_sinner(player))
+			  return false;
+		  break;
     }
 
   // Unless player has infinite duration cheat, set duration (killough)
 
-  if (player->powers[power] >= 0)
-    player->powers[power] = tics[power];
+  if (player->powers[power] >= 0) {
+	  if (player->powers[power]) {
+		  if ((player->armorpoints -= 25) < 0) {
+			  player->mo->health = player->health += player->armorpoints;
+			  player->armorpoints = player->armortype = 0;
+		  }
+		  P_DamageMobj(player->mo, NULL, NULL, 0);
+	  }
+	  player->powers[power] = tics[power];	  
+  }
+    
   return true;
 }
 
@@ -335,46 +377,76 @@ void P_TouchSpecialThing(mobj_t *special, mobj_t *toucher)
         // bonus items
     case SPR_BON1:
       player->health++;               // can go over 100%
-      if (player->health > (maxhealthbonus))//e6y
-        player->health = (maxhealthbonus);//e6y
+	  if (player->health > maxhealthbonus) { //e6y
+		  if (hm_sin) {
+			  hm_add_3_sin(player, 1);
+		  } else {
+			  player->health = maxhealthbonus;   //e6y
+		  }
+	  }
       player->mo->health = player->health;
       player->message = s_GOTHTHBONUS; // Ty 03/22/98 - externalized
       break;
 
     case SPR_BON2:
       player->armorpoints++;          // can go over 100%
-      // e6y
-      // Doom 1.2 does not do check of armor points on overflow.
-      // If you set the "IDKFA Armor" to MAX_INT (DWORD at 0x00064B5A -> FFFFFF7F)
-      // and pick up one or more armor bonuses, your armor becomes negative
-      // and you will die after reception of any damage since this moment.
-      // It happens because the taken health damage depends from armor points 
-      // if they are present and becomes equal to very large value in this case
-      if (player->armorpoints > max_armor && compatibility_level != doom_12_compatibility)
-        player->armorpoints = max_armor;
-      // e6y
-      // We always give armor type 1 for the armor bonuses;
-      // dehacked only affects the GreenArmor.
-      if (!player->armortype)
-        player->armortype =
-         ((!demo_compatibility || prboom_comp[PC_APPLY_GREEN_ARMOR_CLASS_TO_ARMOR_BONUSES].state) ? 
-          green_armor_class : 1);
+	  if (player->armorpoints > max_armor) { //e6y
+		  if (hm_sin) {
+			  hm_add_3_sin(player, 1);
+		  }
+		  else {
+			  // e6y
+			  // Doom 1.2 does not do check of armor points on overflow.
+			  // If you set the "IDKFA Armor" to MAX_INT (DWORD at 0x00064B5A -> FFFFFF7F)
+			  // and pick up one or more armor bonuses, your armor becomes negative
+			  // and you will die after reception of any damage since this moment.
+			  // It happens because the taken health damage depends from armor points 
+			  // if they are present and becomes equal to very large value in this case
+			  if (compatibility_level != doom_12_compatibility)
+				  player->armorpoints = max_armor;
+		  }
+	  }
+
+	  // e6y
+	  // We always give armor type 1 for the armor bonuses;
+	  // dehacked only affects the GreenArmor.
+	  if (!player->armortype)
+		  player->armortype =
+		  ((!demo_compatibility || prboom_comp[PC_APPLY_GREEN_ARMOR_CLASS_TO_ARMOR_BONUSES].state) ?
+			  green_armor_class : 1);
+
       player->message = s_GOTARMBONUS; // Ty 03/22/98 - externalized
       break;
 
     case SPR_SOUL:
-      player->health += soul_health;
-      if (player->health > max_soul)
-        player->health = max_soul;
-      player->mo->health = player->health;
-      player->message = s_GOTSUPER; // Ty 03/22/98 - externalized
-      sound = sfx_getpow;
-      break;
-
+	{
+		int old_health = player->health;
+		player->health += soul_health;
+		if (player->health > max_soul) {
+			if (hm_sin) {
+				if (old_health >= max_soul)
+					hm_add_3_sin(player, soul_health);
+				else
+					hm_add_3_sin(player, player->health - max_soul);
+			}
+			else {
+				player->health = max_soul;
+			}
+		}
+		player->mo->health = player->health;
+		player->message = s_GOTSUPER; // Ty 03/22/98 - externalized
+		sound = sfx_getpow;
+		break;
+	}
     case SPR_MEGA:
       if (gamemode != commercial)
         return;
-      player->health = mega_health;
+	  if (hm_sin) {
+		  hm_add_3_sin(player, (player->health <= mega_health) ? player->health : mega_health);
+		  player->health += mega_health * 3;
+	  } else {
+		  player->health = mega_health;
+	  }      
       player->mo->health = player->health;
       // e6y
       // We always give armor type 2 for the megasphere;
