@@ -3128,11 +3128,11 @@ setup_menu_t gen_settings2[] = { // General Settings screen2
   {"Maximum number of player corpses", S_NUM|S_PRGWARN, m_null, G_X, G_Y+12*8, {"max_player_corpse"}},
   {"Game speed, percentage of normal", S_NUM|S_PRGWARN, m_null, G_X, G_Y+13*8, {"realtic_clock_rate"}},
   {"Default skill level",              S_CHOICE,        m_null, G_X, G_Y+14*8, {"default_skill"}, 0, 0, NULL, gen_skillstrings},
-  {"Default compatibility level",      S_CHOICE,        m_null, G_X, G_Y+15*8, {"default_compatibility_level"}, 0, 0, NULL, &gen_compstrings[1]},
-  {"Show ENDOOM screen",               S_YESNO,         m_null, G_X, G_Y+16*8, {"showendoom"}},
-  {"Fullscreen menu background",       S_YESNO, m_null, G_X, G_Y + 17*8, {"menu_background"}},
+  {"Default compatibility level",      S_CHOICE,        m_null, G_X, G_Y + 15 * 8, {"default_compatibility_level"}, 0, 0, NULL, &gen_compstrings[1]},
+  {"Show ENDOOM screen",               S_YESNO,         m_null, G_X, G_Y + 16 * 8, {"showendoom"}},
+  {"Fullscreen menu background",       S_YESNO, m_null, G_X, G_Y + 17 * 8, {"menu_background"}},
 #ifdef USE_WINDOWS_LAUNCHER
-  {"Use In-Game Launcher",             S_CHOICE,        m_null, G_X, G_Y+ 18*8, {"launcher_enable"}, 0, 0, NULL, launcher_enable_states},
+  {"Use In-Game Launcher",             S_CHOICE,        m_null, G_X, G_Y + 18 * 8, {"launcher_enable"}, 0, 0, NULL, launcher_enable_states},
 #endif
 
 
@@ -3420,6 +3420,7 @@ enum
   compat_ouchface,
   compat_maxhealth,
   compat_translucency,
+  compat_computer_map,
 };
 
 setup_menu_t comp_settings1[] =  // Compatibility Settings screen #1
@@ -3528,6 +3529,8 @@ setup_menu_t comp_settings3[] =  // Compatibility Settings screen #3
    C_Y + compat_maxhealth * COMP_SPC, {"comp_maxhealth"}},
   {"No predefined translucency for some things", S_YESNO, m_null, C_X,
    C_Y + compat_translucency * COMP_SPC, {"comp_translucency"}},
+  {"Don't pick multiple computer maps", S_YESNO, m_null, C_X,
+   C_Y + compat_computer_map * COMP_SPC, {"comp_computer_map"}},
   {"<- PREV", S_SKIP|S_PREV, m_null, KB_PREV, C_Y+C_NEXTPREV,{comp_settings2}},
   {0,S_SKIP|S_END,m_null}
 };
