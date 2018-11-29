@@ -62,8 +62,10 @@ void hm_sin_think(player_t* player) {
 		if (hd < 0)
 			sin_state->damage += hd;
 
+		kill = sin_state->damage >= 1000;
+
 		if (sin_state->damage > 0) {
-			if (kill = sin_state->damage >= 1000) {
+			if (kill) {
 				P_DamageMobj(player->mo, NULL, NULL, sin_state->damage);
 				player->message = "You don't learn. Do you? Just DIE!!";
 			} else {
