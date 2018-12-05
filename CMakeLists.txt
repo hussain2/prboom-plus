@@ -1,11 +1,11 @@
-cmake_minimum_required (VERSION 3.3)
+cmake_minimum_required (VERSION 3.8)
 
 set(CMAKE_DEBUG_POSTFIX d)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
 
 #############
 
-project(PrBoom-Plus VERSION 2.5.2.0)
+project(PrBoom-Plus VERSION 2.5.2.0 LANGUAGES C)
 
 include(CheckIncludeFiles)
 include(CheckFunctionExists)
@@ -73,7 +73,7 @@ find_package(OpenGL)
 set (PACKAGE_VERSION ${PROJECT_VERSION})
 string(TOLOWER ${PROJECT_NAME} PACKAGE_NAME)
 
-if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
+if("${CMAKE_BUILD_TYPE}" STREQUAL Debug)
 	set(DEBUG yes)
 endif()
 
@@ -81,7 +81,6 @@ set(DOOMWADDIR data
 	CACHE PATH "Path to install prboom.wad and look for other WAD files")
 
 option(DOGS "Support MBF helper dogs" yes)
-option(GL_DOOM "Support OpenGL" yes)
 
 #############
 
@@ -106,11 +105,11 @@ CMAKE_DEPENDENT_OPTION(HEAPDUMP "Generated heap dumps" ON INSTRUMENTED OFF)
 CMAKE_DEPENDENT_OPTION(ZONEIDCHECK "Perform id checks on zone blocks, to detect corrupted and illegally freed blocks" ON DEBUG OFF)
 CMAKE_DEPENDENT_OPTION(SIMPLECHECKS "Perform quick checks which only impose an overhead if a posible error is detected" ON DEBUG OFF)
 CMAKE_DEPENDENT_OPTION(TIMEDIAG "Create time stamps each time a lump is locked. Lumps locked for long periods of time are reported" ON DEBUG OFF)
-CMAKE_DEPENDENT_OPTION(USE_GLU_TESS "Use the gluTesselator" ON GL_DOOM OFF)
-CMAKE_DEPENDENT_OPTION(USE_GLU_IMAGESCALE "Use gluImageScale" ON GL_DOOM OFF)
-CMAKE_DEPENDENT_OPTION(USE_GLU_MIPMAP "Use gluBuild2DMipmaps" ON GL_DOOM OFF)
-CMAKE_DEPENDENT_OPTION(USE_FBO_TECHNIQUE "Use FBO for some tricks in OpenGL" ON GL_DOOM OFF)
-CMAKE_DEPENDENT_OPTION(USE_SHADERS "Use hardware shaders in OpenGL" ON GL_DOOM OFF)
+CMAKE_DEPENDENT_OPTION(USE_GLU_TESS "Use the gluTesselator" ON OPENGL_FOUND OFF)
+CMAKE_DEPENDENT_OPTION(USE_GLU_IMAGESCALE "Use gluImageScale" ON OPENGL_FOUND OFF)
+CMAKE_DEPENDENT_OPTION(USE_GLU_MIPMAP "Use gluBuild2DMipmaps" ON OPENGL_FOUND OFF)
+CMAKE_DEPENDENT_OPTION(USE_FBO_TECHNIQUE "Use FBO for some tricks in OpenGL" ON OPENGL_FOUND OFF)
+CMAKE_DEPENDENT_OPTION(USE_SHADERS "Use hardware shaders in OpenGL" ON OPENGL_FOUND OFF)
 
 #############
 
@@ -236,11 +235,15 @@ set (libraries
 
 set (libraries_to_use SDL2::SDL2)
 
+if (NOT WIN32)
+	list(APPEND libraries_to_use m)
+endif()
+
 foreach(library IN LISTS libraries)
 	if (TARGET ${library})
 		string(REGEX REPLACE ".+::\(.+\)" "\\1" library_name ${library})
 		if (NOT ${library} STREQUAL ${library_name}::${library_name})
-			string(REPLACE :: _ library_name ${library})				
+			string(REPLACE :: _ library_name ${library})
 		endif()
 	else()
 		set(library_name ${library})
@@ -268,7 +271,7 @@ set_target_properties(prboom-plus
 )
 target_link_libraries(prboom-plus ${libraries_to_use})
 
-if(GL_DOOM)
+if(OPENGL_FOUND)
 	add_executable(glboom-plus
 		${GL_SOURCE_FILES}
 		${PRBOOM_SOURCES}
