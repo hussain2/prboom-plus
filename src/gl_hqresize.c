@@ -71,7 +71,7 @@
 #include "config.h"
 #endif
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include "doomstat.h"
 #include "v_video.h"

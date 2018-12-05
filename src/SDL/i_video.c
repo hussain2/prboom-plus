@@ -49,10 +49,10 @@
 #include <unistd.h>
 #endif
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 //e6y
 #ifdef _WIN32
-#include <SDL2/SDL_syswm.h>
+#include <SDL_syswm.h>
 #endif
 
 #include "m_argv.h"

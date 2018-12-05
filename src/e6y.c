@@ -41,7 +41,7 @@
 #include <winreg.h>
 #endif
 #ifdef GL_DOOM
-#include <SDL2/SDL_opengl.h>
+#include <SDL_opengl.h>
 #endif
 #include <string.h>
 #include <math.h>
@@ -50,9 +50,9 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #ifdef _WIN32
-#include <SDL2/SDL_syswm.h>
+#include <SDL_syswm.h>
 #endif
 
 #include "hu_lib.h"

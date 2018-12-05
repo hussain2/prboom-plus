@@ -51,7 +51,7 @@
 #include <sys/types.h>
 
 #ifdef USE_SDL2_NET
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #endif
 
 #include "doomtype.h"

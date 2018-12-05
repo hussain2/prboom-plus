@@ -35,7 +35,7 @@
 #endif
 
 #ifdef USE_SDL2_NET
- #include <SDL2/SDL_net.h>
+ #include <SDL_net.h>
  #define UDP_SOCKET UDPsocket
  #define UDP_PACKET UDPpacket
  #define AF_INET

@@ -37,9 +37,9 @@
 
 #include "gl_opengl.h"
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #ifdef USE_SDL2_IMAGE
-#include <SDL2/SDL_image.h>
+#include <SDL_image.h>
 #endif
 #include "doomstat.h"
 #include "v_video.h"

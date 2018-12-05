@@ -40,7 +40,7 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "doomstat.h"
 #include "v_video.h"
 #include "gl_intern.h"

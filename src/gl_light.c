@@ -35,7 +35,7 @@
 #include "config.h"
 #endif
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 #include <math.h>
 
